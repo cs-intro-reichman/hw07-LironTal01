@@ -1,7 +1,6 @@
 
 public class SpellChecker {
 
-
 	public static void main(String[] args) {
 		String word = args[0];
 		int threshold = Integer.parseInt(args[1]);
@@ -11,11 +10,39 @@ public class SpellChecker {
 	}
 
 	public static String tail(String str) {
-		// Your code goes here
+		return str.substring(1, str.length());
 	}
 
 	public static int levenshtein(String word1, String word2) {
-		// Your code goes here
+
+		int insert = 0;
+		int delete = 0;
+		int replace = 0;
+		word1 = word1.toLowerCase();
+		word2 = word2.toLowerCase();
+
+		if (word1.length() == 0) {
+			return word2.length();
+
+		}
+
+		else if (word2.length() == 0) {
+			return word1.length();
+		}
+
+		if (word1.charAt(0) == word2.charAt(0)) {
+			word1 = tail(word1);
+			word2 = tail(word2);
+			return levenshtein(word1, word2);
+
+		} else {
+			insert = levenshtein(tail(word1), word2);
+			delete = levenshtein(word1, tail(word2));
+			replace = levenshtein(tail(word1), tail(word2));
+		}
+
+		return Math.min(Math.min(insert, delete), replace) + 1;
+
 	}
 
 	public static String[] readDictionary(String fileName) {
@@ -23,13 +50,32 @@ public class SpellChecker {
 
 		In in = new In(fileName);
 
-		// Your code here
+		for (int i = 0; i < dictionary.length; i++) {
+			dictionary[i] = in.readString();
+
+		}
 
 		return dictionary;
 	}
 
 	public static String spellChecker(String word, int threshold, String[] dictionary) {
-		// Your code goes here
+		int minDistance = 0;
+		String similiarString = "";
+
+		for (int i = 0; i < dictionary.length; i++) {
+
+			if (levenshtein(word, dictionary[i]) < threshold) {
+				minDistance = levenshtein(word, dictionary[i]);
+				similiarString = dictionary[i];
+			}
+
+		}
+
+		if (minDistance > threshold) {
+			return word;
+
+		} else
+			return similiarString;
 	}
 
 }
