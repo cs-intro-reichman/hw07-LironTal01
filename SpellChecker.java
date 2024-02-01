@@ -59,23 +59,23 @@ public class SpellChecker {
 	}
 
 	public static String spellChecker(String word, int threshold, String[] dictionary) {
-		int minDistance = 0;
-		String similiarString = "";
+		int minDistance = threshold + 1;
+		String similarString = word;
 
 		for (int i = 0; i < dictionary.length; i++) {
-
-			if (levenshtein(word, dictionary[i]) < threshold) {
-				minDistance = levenshtein(word, dictionary[i]);
-				similiarString = dictionary[i];
+			int distance = levenshtein(word, dictionary[i]);
+			if (distance < minDistance) {
+				minDistance = distance;
+				similarString = dictionary[i];
 			}
 
 		}
 
-		if (minDistance > threshold) {
+		if (minDistance <= threshold) {
+			return similarString;
+		} else {
 			return word;
-
-		} else
-			return similiarString;
+		}
 	}
 
 }
